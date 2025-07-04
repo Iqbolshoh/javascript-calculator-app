@@ -5,12 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modern Calculator with History</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
 
         body {
@@ -18,40 +19,44 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background: #f0f2f5;
+            background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
+            padding: 20px;
         }
 
         .calculator {
-            width: 340px;
+            width: 360px;
             background: #ffffff;
-            border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border-radius: 24px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
             overflow: hidden;
             position: relative;
+            border: 1px solid rgba(0, 0, 0, 0.05);
         }
 
         .display {
-            padding: 24px;
+            padding: 32px 24px;
             text-align: right;
-            background: #1e293b;
+            background: linear-gradient(145deg, #1e293b, #2a364d);
             color: white;
+            min-height: 140px;
             position: relative;
-            min-height: 120px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .previous-operand {
-            font-size: 1rem;
-            color: rgba(255, 255, 255, 0.6);
-            height: 20px;
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.7);
+            height: 24px;
             overflow: hidden;
+            margin-bottom: 8px;
         }
 
         .current-operand {
-            font-size: 2.8rem;
-            margin-top: 8px;
+            font-size: 3rem;
             font-weight: 300;
             overflow: hidden;
             text-overflow: ellipsis;
+            line-height: 1.2;
         }
 
         .buttons {
@@ -59,31 +64,44 @@
             grid-template-columns: repeat(4, 1fr);
             gap: 1px;
             background: #e2e8f0;
+            padding: 8px;
         }
 
         button {
             border: none;
             padding: 20px;
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             cursor: pointer;
-            background: white;
-            transition: all 0.2s;
+            background: #ffffff;
+            transition: all 0.2s ease;
+            border-radius: 12px;
+            margin: 4px;
+        }
+
+        button:hover {
+            background: #f8fafc;
+            transform: translateY(-1px);
         }
 
         button:active {
-            background: #f1f5f9;
+            transform: translateY(0);
+            background: #e2e8f0;
         }
 
         .operator {
             background: #f8fafc;
             color: #3b82f6;
-            font-weight: 500;
+            font-weight: 600;
         }
 
         .equals {
             background: #3b82f6;
             color: white;
-            font-weight: 500;
+            font-weight: 600;
+        }
+
+        .equals:hover {
+            background: #4b8ef7;
         }
 
         .equals:active {
@@ -96,22 +114,32 @@
 
         .function {
             color: #ef4444;
+            font-weight: 600;
         }
 
         .history-btn {
             position: absolute;
             left: 24px;
-            top: 24px;
+            top: 28px;
             cursor: pointer;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             color: rgba(255, 255, 255, 0.8);
-            transition: transform 0.2s;
+            transition: all 0.2s;
             z-index: 5;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 8px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .history-btn:hover {
-            transform: scale(1.1);
+            transform: scale(1.05);
             color: white;
+            background: rgba(255, 255, 255, 0.2);
         }
 
         .history-panel {
@@ -120,7 +148,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: #1e293b;
+            background: linear-gradient(145deg, #1e293b, #2a364d);
             color: white;
             padding: 24px;
             overflow: hidden;
@@ -139,30 +167,38 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
             padding-bottom: 16px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
             flex-shrink: 0;
         }
 
         .history-title {
-            font-size: 1.2rem;
-            font-weight: 500;
+            font-size: 1.4rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .close-history {
-            background: none;
+            background: rgba(255, 255, 255, 0.1);
             border: none;
             color: white;
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             cursor: pointer;
-            padding: 0;
-            line-height: 1;
-            width: 30px;
-            height: 30px;
+            padding: 8px;
+            border-radius: 8px;
+            width: 36px;
+            height: 36px;
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .close-history:hover {
+            background: rgba(255, 255, 255, 0.2);
         }
 
         .history-content {
@@ -172,67 +208,97 @@
             margin-right: -8px;
         }
 
-        .history-items {
+        .history-item {
+            padding: 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: rgba(255, 255, 255, 0.05);
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
             gap: 12px;
         }
 
-        .history-item {
-            padding: 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background 0.2s;
+        .history-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(2px);
         }
 
-        .history-item:hover {
-            background: rgba(255, 255, 255, 0.05);
+        .history-item-content {
+            flex-grow: 1;
         }
 
         .history-expression {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1rem;
             word-break: break-all;
         }
 
         .history-result {
-            font-size: 1.1rem;
-            margin-top: 4px;
+            font-size: 1.2rem;
+            margin-top: 6px;
             text-align: right;
             font-weight: 500;
+            color: #3b82f6;
+        }
+
+        .delete-history-item {
+            background: none;
+            border: none;
+            color: #ef4444;
+            font-size: 1rem;
+            cursor: pointer;
+            padding: 8px;
+            opacity: 0.7;
+            transition: all 0.2s;
+        }
+
+        .delete-history-item:hover {
+            opacity: 1;
+            transform: scale(1.1);
         }
 
         .history-footer {
             flex-shrink: 0;
-            padding-top: 16px;
-            margin-top: 16px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 20px;
+            margin-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
         }
 
         .clear-history {
             width: 100%;
-            padding: 12px;
+            padding: 14px;
             background: rgba(255, 255, 255, 0.1);
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 12px;
             cursor: pointer;
-            font-size: 1rem;
-            transition: background 0.2s;
+            font-size: 1.1rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         .clear-history:hover {
             background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
         }
 
         .no-history {
             text-align: center;
             color: rgba(255, 255, 255, 0.5);
-            padding: 40px 0;
-            font-size: 0.95rem;
+            padding: 48px 0;
+            font-size: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: center;
         }
 
-        /* Custom scrollbar */
         .history-content::-webkit-scrollbar {
             width: 6px;
         }
@@ -256,46 +322,46 @@
 <body>
     <div class="calculator">
         <div class="display">
-            <div class="history-btn">🕘</div>
+            <div class="history-btn"><i class="fas fa-clock"></i></div>
             <div class="previous-operand"></div>
             <div class="current-operand">0</div>
         </div>
         <div class="buttons">
-            <button class="clear">AC</button>
-            <button class="backspace">⌫</button>
-            <button class="percent">%</button>
-            <button class="operator">÷</button>
+            <button class="function clear"> AC</button>
+            <button class="function backspace"><i class="fas fa-backspace"></i></button>
+            <button class="function percent"><i class="fas fa-percentage"></i></button>
+            <button class="operator"><i class="fas fa-divide"></i></button>
 
             <button class="number">7</button>
             <button class="number">8</button>
             <button class="number">9</button>
-            <button class="operator">×</button>
+            <button class="operator"><i class="fas fa-times"></i></button>
 
             <button class="number">4</button>
             <button class="number">5</button>
             <button class="number">6</button>
-            <button class="operator">-</button>
+            <button class="operator"><i class="fas fa-minus"></i></button>
 
             <button class="number">1</button>
             <button class="number">2</button>
             <button class="number">3</button>
-            <button class="operator">+</button>
+            <button class="operator"><i class="fas fa-plus"></i></button>
 
             <button class="number span-2">0</button>
             <button class="number">.</button>
-            <button class="equals">=</button>
+            <button class="equals"><i class="fas fa-equals"></i></button>
         </div>
 
         <div class="history-panel">
             <div class="history-header">
-                <div class="history-title">History</div>
-                <button class="close-history">×</button>
+                <div class="history-title"><i class="fas fa-history"></i> History</div>
+                <button class="close-history"><i class="fas fa-times"></i></button>
             </div>
             <div class="history-content">
                 <div class="history-items"></div>
             </div>
             <div class="history-footer">
-                <button class="clear-history">Clear History</button>
+                <button class="clear-history"><i class="fas fa-trash-alt"></i> Clear History</button>
             </div>
         </div>
     </div>
@@ -332,20 +398,36 @@
         });
 
         function updateHistoryDisplay() {
-            historyItems.innerHTML = calculationHistory.length ? '' : '<div class="no-history">No calculations yet</div>';
+            historyItems.innerHTML = calculationHistory.length
+                ? ''
+                : '<div class="no-history"><i class="fas fa-info-circle"></i> No calculations yet</div>';
 
-            calculationHistory.slice().reverse().forEach(item => {
+            calculationHistory.slice().reverse().forEach((item, index) => {
                 const historyItem = document.createElement('div');
                 historyItem.className = 'history-item';
 
                 historyItem.innerHTML = `
-                    <div class="history-expression">${item.expression}</div>
-                    <div class="history-result">${item.result}</div>
+                    <div class="history-item-content">
+                        <div class="history-expression">${item.expression}</div>
+                        <div class="history-result">${item.result}</div>
+                    </div>
+                    <button class="delete-history-item" data-index="${calculationHistory.length - 1 - index}">
+                        <i class="fas fa-trash"></i>
+                    </button>
                 `;
 
-                historyItem.addEventListener('click', () => {
+                historyItem.querySelector('.history-item-content').addEventListener('click', () => {
+                    previousOperand.textContent = item.expression;
                     currentOperand.textContent = item.result;
                     historyPanel.classList.remove('active');
+                });
+
+                historyItem.querySelector('.delete-history-item').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const index = parseInt(e.currentTarget.getAttribute('data-index'));
+                    calculationHistory.splice(index, 1);
+                    localStorage.setItem('calculatorHistory', JSON.stringify(calculationHistory));
+                    updateHistoryDisplay();
                 });
 
                 historyItems.appendChild(historyItem);
@@ -356,7 +438,9 @@
             button.addEventListener('click', () => {
                 const value = button.textContent;
                 if (value === '.' && currentOperand.textContent.includes('.')) return;
-                currentOperand.textContent = currentOperand.textContent === '0' && value !== '.' ? value : currentOperand.textContent + value;
+                currentOperand.textContent = currentOperand.textContent === '0' && value !== '.'
+                    ? value
+                    : currentOperand.textContent + value;
             });
         });
 
@@ -365,7 +449,9 @@
                 const lastChar = currentOperand.textContent.slice(-1);
                 const operator = button.textContent;
                 if (currentOperand.textContent === '') return;
-                currentOperand.textContent = isOperator(lastChar) ? currentOperand.textContent.slice(0, -1) + operator : currentOperand.textContent + operator;
+                currentOperand.textContent = isOperator(lastChar)
+                    ? currentOperand.textContent.slice(0, -1) + operator
+                    : currentOperand.textContent + operator;
             });
         });
 
