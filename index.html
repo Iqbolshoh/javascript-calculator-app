@@ -215,7 +215,6 @@
             });
         });
 
-
         operatorButtons.forEach(button => {
             button.addEventListener('click', () => {
                 const lastChar = currentOperand.textContent.slice(-1);
@@ -256,6 +255,11 @@
                 currentOperand.textContent = parseFloat(value) / 100;
             }
         });
+
+        equalsButton.addEventListener('click', () => {
+            let result = eval(currentOperand.textContent.replace(/×/g, '*').replace(/÷/g, '/'));
+            console.log(result)
+        })
     </script>
 </body>
 
