@@ -258,7 +258,8 @@
 
         equalsButton.addEventListener('click', () => {
             let result = eval(currentOperand.textContent.replace(/×/g, '*').replace(/÷/g, '/'));
-            console.log(result)
+            previousOperand.textContent = currentOperand.textContent;
+            currentOperand.textContent = result;
         })
     </script>
 </body>
