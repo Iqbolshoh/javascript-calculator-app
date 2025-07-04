@@ -85,6 +85,10 @@ button:active {
     font-weight: 600;
 }
 
+.operator i {
+    color: #3b82f6;
+}
+
 .equals {
     background: #3b82f6;
     color: white;

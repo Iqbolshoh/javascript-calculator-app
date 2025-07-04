@@ -79,7 +79,13 @@ numberButtons.forEach(button => {
 operatorButtons.forEach(button => {
     button.addEventListener('click', () => {
         const lastChar = currentOperand.textContent.slice(-1);
-        const operator = button.textContent;
+        const icon = button.querySelector('i');
+        let operator;
+        if (icon.classList.contains('fa-plus')) operator = '+';
+        else if (icon.classList.contains('fa-minus')) operator = '-';
+        else if (icon.classList.contains('fa-times')) operator = '×';
+        else if (icon.classList.contains('fa-divide')) operator = '÷';
+
         if (currentOperand.textContent === '') return;
         currentOperand.textContent = isOperator(lastChar)
             ? currentOperand.textContent.slice(0, -1) + operator
