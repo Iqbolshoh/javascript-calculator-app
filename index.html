@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elegant Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+
+        .calculator {
+            width: 320px;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .display {
+            padding: 20px;
+            text-align: right;
+            background: #2c3e50;
+            color: white;
+            position: relative;
+        }
+
+        .display::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        }
+
+        .previous-operand {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+            height: 20px;
+            overflow: hidden;
+        }
+
+        .current-operand {
+            font-size: 2.5rem;
+            margin-top: 10px;
+            font-weight: 300;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1px;
+            background: #e0e5ec;
+        }
+
+        button {
+            border: none;
+            outline: none;
+            padding: 20px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            background: white;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        button::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
+        }
+
+        button:focus:not(:active)::after {
+            animation: ripple 0.6s ease-out;
+        }
+
+        @keyframes ripple {
+            0% {
+                transform: scale(0, 0);
+                opacity: 0.5;
+            }
+
+            100% {
+                transform: scale(20, 20);
+                opacity: 0;
+            }
+        }
+
+        .operator {
+            background: #f1f3f4;
+            color: #4285f4;
+            font-weight: 500;
+        }
+
+        .equals {
+            background: #4285f4;
+            color: white;
+            font-weight: 500;
+        }
+
+        .span-2 {
+            grid-column: span 2;
+        }
+
+        .function {
+            color: #ea4335;
+        }
+
+        .number {
+            font-weight: 500;
+        }
+
+        button:hover {
+            background: #f8f9fa;
+        }
+
+        .operator:hover {
+            background: #e8f0fe;
+        }
+
+        .equals:hover {
+            background: #3367d6;
+        }
+
+        .function:hover {
+            background: #fce8e6;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="calculator">
+        <div class="display">
+            <div class="previous-operand"></div>
+            <div class="current-operand">0</div>
+        </div>
+        <div class="buttons">
+            <button class="clear">AC</button>
+            <button class="backspace">⌫</button>
+            <button class="percent">%</button>
+            <button class="operator">÷</button>
+
+            <button class="number">7</button>
+            <button class="number">8</button>
+            <button class="number">9</button>
+            <button class="operator">×</button>
+
+            <button class="number">4</button>
+            <button class="number">5</button>
+            <button class="number">6</button>
+            <button class="operator">-</button>
+
+            <button class="number">1</button>
+            <button class="number">2</button>
+            <button class="number">3</button>
+            <button class="operator">+</button>
+
+            <button class="number span-2">0</button>
+            <button class="number">.</button>
+            <button class="equals">=</button>
+        </div>
+    </div>
+
+    <script>
+        let previousOperand = document.querySelector('.previous-operand');
+        let currentOperand = document.querySelector('.current-operand');
+        let clearButton = document.querySelector('.clear');
+        let backspaceButton = document.querySelector('.backspace');
+        let numberButtons = document.querySelectorAll('.number');
+        let operatorButtons = document.querySelectorAll('.operator');
+        let equalsButton = document.querySelector('.equals');
+        let percentButton = document.querySelector('.percent');
+
+        numberButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const value = button.textContent;
+                if (value === '.' && currentOperand.textContent.includes('.')) {
+                    return;
+                }
+                if (currentOperand.textContent === '0' && value !== '.') {
+                    currentOperand.textContent = value;
+                } else {
+                    currentOperand.textContent += value;
+                }
+            });
+        });
+
+
+        operatorButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const lastChar = currentOperand.textContent.slice(-1);
+                const operator = button.textContent;
+
+                if (currentOperand.textContent === '') return;
+
+                if (isOperator(lastChar)) {
+                    currentOperand.textContent = currentOperand.textContent.slice(0, -1) + operator;
+                } else {
+                    currentOperand.textContent += operator;
+                }
+            });
+        });
+
+        function isOperator(char) {
+            return ['+', '-', '×', '÷'].includes(char);
+        }
+
+        clearButton.addEventListener('click', () => {
+            previousOperand.textContent = '';
+            currentOperand.textContent = '0';
+        });
+
+        backspaceButton.addEventListener('click', () => {
+            let str = currentOperand.textContent.split('')
+            str.pop()
+            currentOperand.textContent = str.join('')
+            if (str.length === 0) {
+                currentOperand.textContent = '0';
+            }
+        })
+
+        percentButton.addEventListener('click', () => {
+            let value = currentOperand.textContent;
+
+            if (value !== '' && !isNaN(value)) {
+                currentOperand.textContent = parseFloat(value) / 100;
+            }
+        });
+    </script>
+</body>
+
+</html>
