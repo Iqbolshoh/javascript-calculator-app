@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elegant Calculator with History</title>
+    <title>Modern Calculator with History</title>
     <style>
         * {
             margin: 0;
@@ -18,52 +18,37 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-        }
-
-        .calculator-container {
-            display: flex;
-            gap: 20px;
+            background: #f0f2f5;
         }
 
         .calculator {
-            width: 320px;
-            background: #fff;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 340px;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
             overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.3);
             position: relative;
         }
 
         .display {
-            padding: 20px;
+            padding: 24px;
             text-align: right;
-            background: #2c3e50;
+            background: #1e293b;
             color: white;
             position: relative;
-        }
-
-        .display::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            min-height: 120px;
         }
 
         .previous-operand {
             font-size: 1rem;
-            color: rgba(255, 255, 255, 0.7);
+            color: rgba(255, 255, 255, 0.6);
             height: 20px;
             overflow: hidden;
         }
 
         .current-operand {
-            font-size: 2.5rem;
-            margin-top: 10px;
+            font-size: 2.8rem;
+            margin-top: 8px;
             font-weight: 300;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -73,65 +58,36 @@
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 1px;
-            background: #e0e5ec;
+            background: #e2e8f0;
         }
 
         button {
             border: none;
-            outline: none;
             padding: 20px;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             cursor: pointer;
             background: white;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
+            transition: all 0.2s;
         }
 
         button:active {
-            transform: scale(0.95);
-        }
-
-        button::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 5px;
-            height: 5px;
-            background: rgba(0, 0, 0, 0.1);
-            opacity: 0;
-            border-radius: 100%;
-            transform: scale(1, 1) translate(-50%);
-            transform-origin: 50% 50%;
-        }
-
-        button:focus:not(:active)::after {
-            animation: ripple 0.6s ease-out;
-        }
-
-        @keyframes ripple {
-            0% {
-                transform: scale(0, 0);
-                opacity: 0.5;
-            }
-
-            100% {
-                transform: scale(20, 20);
-                opacity: 0;
-            }
+            background: #f1f5f9;
         }
 
         .operator {
-            background: #f1f3f4;
-            color: #4285f4;
+            background: #f8fafc;
+            color: #3b82f6;
             font-weight: 500;
         }
 
         .equals {
-            background: #4285f4;
+            background: #3b82f6;
             color: white;
             font-weight: 500;
+        }
+
+        .equals:active {
+            background: #2563eb;
         }
 
         .span-2 {
@@ -139,35 +95,22 @@
         }
 
         .function {
-            color: #ea4335;
-        }
-
-        .number {
-            font-weight: 500;
-        }
-
-        button:hover {
-            background: #f8f9fa;
-        }
-
-        .operator:hover {
-            background: #e8f0fe;
-        }
-
-        .equals:hover {
-            background: #3367d6;
-        }
-
-        .function:hover {
-            background: #fce8e6;
+            color: #ef4444;
         }
 
         .history-btn {
             position: absolute;
-            left: 20px;
-            top: 20px;
+            left: 24px;
+            top: 24px;
             cursor: pointer;
             font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+            transition: transform 0.2s;
+        }
+
+        .history-btn:hover {
+            transform: scale(1.1);
+            color: white;
         }
 
         .history-panel {
@@ -176,9 +119,9 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: #2c3e50;
+            background: #1e293b;
             color: white;
-            padding: 20px;
+            padding: 24px;
             overflow-y: auto;
             transform: translateX(100%);
             transition: transform 0.3s ease;
@@ -193,13 +136,11 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 24px;
         }
 
         .history-title {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             font-weight: 500;
         }
 
@@ -207,95 +148,109 @@
             background: none;
             border: none;
             color: white;
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             cursor: pointer;
+            padding: 8px;
+            line-height: 1;
+        }
+
+        .history-items {
+            max-height: calc(100% - 120px);
+            overflow-y: auto;
         }
 
         .history-item {
-            padding: 10px 0;
+            padding: 12px 0;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: background 0.2s;
         }
 
-        .history-item:last-child {
-            border-bottom: none;
+        .history-item:hover {
+            background: rgba(255, 255, 255, 0.05);
         }
 
         .history-expression {
             color: rgba(255, 255, 255, 0.7);
-            font-size: 0.9rem;
+            font-size: 0.95rem;
         }
 
         .history-result {
-            font-size: 1.1rem;
-            margin-top: 5px;
+            font-size: 1.2rem;
+            margin-top: 4px;
             text-align: right;
         }
 
         .clear-history {
             margin-top: 20px;
-            padding: 10px;
+            padding: 12px;
             background: rgba(255, 255, 255, 0.1);
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             width: 100%;
             cursor: pointer;
-            transition: background 0.3s;
+            font-size: 1rem;
+            transition: background 0.2s;
         }
 
         .clear-history:hover {
             background: rgba(255, 255, 255, 0.2);
         }
+
+        .no-history {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: 40px;
+            font-size: 1rem;
+        }
     </style>
 </head>
 
 <body>
-    <div class="calculator-container">
-        <div class="calculator">
-            <div class="display">
-                <div class="history-btn">🕘</div>
-                <div class="previous-operand"></div>
-                <div class="current-operand">0</div>
+    <div class="calculator">
+        <div class="display">
+            <div class="history-btn">🕘</div>
+            <div class="previous-operand"></div>
+            <div class="current-operand">0</div>
+        </div>
+        <div class="buttons">
+            <button class="clear">AC</button>
+            <button class="backspace">⌫</button>
+            <button class="percent">%</button>
+            <button class="operator">÷</button>
+
+            <button class="number">7</button>
+            <button class="number">8</button>
+            <button class="number">9</button>
+            <button class="operator">×</button>
+
+            <button class="number">4</button>
+            <button class="number">5</button>
+            <button class="number">6</button>
+            <button class="operator">-</button>
+
+            <button class="number">1</button>
+            <button class="number">2</button>
+            <button class="number">3</button>
+            <button class="operator">+</button>
+
+            <button class="number span-2">0</button>
+            <button class="number">.</button>
+            <button class="equals">=</button>
+        </div>
+
+        <div class="history-panel">
+            <div class="history-header">
+                <div class="history-title">History</div>
+                <button class="close-history">×</button>
             </div>
-            <div class="buttons">
-                <button class="clear">AC</button>
-                <button class="backspace">⌫</button>
-                <button class="percent">%</button>
-                <button class="operator">÷</button>
-
-                <button class="number">7</button>
-                <button class="number">8</button>
-                <button class="number">9</button>
-                <button class="operator">×</button>
-
-                <button class="number">4</button>
-                <button class="number">5</button>
-                <button class="number">6</button>
-                <button class="operator">-</button>
-
-                <button class="number">1</button>
-                <button class="number">2</button>
-                <button class="number">3</button>
-                <button class="operator">+</button>
-
-                <button class="number span-2">0</button>
-                <button class="number">.</button>
-                <button class="equals">=</button>
-            </div>
-
-            <div class="history-panel">
-                <div class="history-header">
-                    <div class="history-title">Calculation History</div>
-                    <button class="close-history">×</button>
-                </div>
-                <div class="history-items"></div>
-                <button class="clear-history">Clear History</button>
-            </div>
+            <div class="history-items"></div>
+            <button class="clear-history">Clear History</button>
         </div>
     </div>
 
     <script>
-        // DOM elements
         const historyBtn = document.querySelector('.history-btn');
         const historyPanel = document.querySelector('.history-panel');
         const closeHistoryBtn = document.querySelector('.close-history');
@@ -310,56 +265,34 @@
         const equalsButton = document.querySelector('.equals');
         const percentButton = document.querySelector('.percent');
 
-        // Load history from localStorage
         let calculationHistory = JSON.parse(localStorage.getItem('calculatorHistory')) || [];
 
-        // Initialize calculator
         function initCalculator() {
             currentOperand.textContent = '0';
             updateHistoryDisplay();
         }
 
-        // Toggle history panel
-        historyBtn.addEventListener('click', () => {
-            historyPanel.classList.add('active');
-        });
+        historyBtn.addEventListener('click', () => historyPanel.classList.add('active'));
+        closeHistoryBtn.addEventListener('click', () => historyPanel.classList.remove('active'));
 
-        closeHistoryBtn.addEventListener('click', () => {
-            historyPanel.classList.remove('active');
-        });
-
-        // Clear history
         clearHistoryBtn.addEventListener('click', () => {
             calculationHistory = [];
             localStorage.setItem('calculatorHistory', JSON.stringify(calculationHistory));
             updateHistoryDisplay();
         });
 
-        // Update history display
         function updateHistoryDisplay() {
-            historyItems.innerHTML = '';
-
-            if (calculationHistory.length === 0) {
-                historyItems.innerHTML = '<div class="history-item" style="text-align: center; color: rgba(255, 255, 255, 0.5);">No history yet</div>';
-                return;
-            }
+            historyItems.innerHTML = calculationHistory.length ? '' : '<div class="no-history">No calculations yet</div>';
 
             calculationHistory.slice().reverse().forEach(item => {
                 const historyItem = document.createElement('div');
                 historyItem.className = 'history-item';
 
-                const expressionDiv = document.createElement('div');
-                expressionDiv.className = 'history-expression';
-                expressionDiv.textContent = item.expression;
+                historyItem.innerHTML = `
+                    <div class="history-expression">${item.expression}</div>
+                    <div class="history-result">${item.result}</div>
+                `;
 
-                const resultDiv = document.createElement('div');
-                resultDiv.className = 'history-result';
-                resultDiv.textContent = item.result;
-
-                historyItem.appendChild(expressionDiv);
-                historyItem.appendChild(resultDiv);
-
-                // Click handler to load history item into calculator
                 historyItem.addEventListener('click', () => {
                     currentOperand.textContent = item.result;
                     historyPanel.classList.remove('active');
@@ -369,34 +302,20 @@
             });
         }
 
-        // Number buttons
         numberButtons.forEach(button => {
             button.addEventListener('click', () => {
                 const value = button.textContent;
-                if (value === '.' && currentOperand.textContent.includes('.')) {
-                    return;
-                }
-                if (currentOperand.textContent === '0' && value !== '.') {
-                    currentOperand.textContent = value;
-                } else {
-                    currentOperand.textContent += value;
-                }
+                if (value === '.' && currentOperand.textContent.includes('.')) return;
+                currentOperand.textContent = currentOperand.textContent === '0' && value !== '.' ? value : currentOperand.textContent + value;
             });
         });
 
-        // Operator buttons
         operatorButtons.forEach(button => {
             button.addEventListener('click', () => {
                 const lastChar = currentOperand.textContent.slice(-1);
                 const operator = button.textContent;
-
                 if (currentOperand.textContent === '') return;
-
-                if (isOperator(lastChar)) {
-                    currentOperand.textContent = currentOperand.textContent.slice(0, -1) + operator;
-                } else {
-                    currentOperand.textContent += operator;
-                }
+                currentOperand.textContent = isOperator(lastChar) ? currentOperand.textContent.slice(0, -1) + operator : currentOperand.textContent + operator;
             });
         });
 
@@ -404,65 +323,39 @@
             return ['+', '-', '×', '÷'].includes(char);
         }
 
-        // Clear button
         clearButton.addEventListener('click', () => {
             previousOperand.textContent = '';
             currentOperand.textContent = '0';
         });
 
-        // Backspace button
         backspaceButton.addEventListener('click', () => {
-            let str = currentOperand.textContent.split('')
-            str.pop()
-            currentOperand.textContent = str.join('')
-            if (str.length === 0) {
-                currentOperand.textContent = '0';
-            }
-        })
-
-        // Percent button
-        percentButton.addEventListener('click', () => {
-            let value = currentOperand.textContent;
-
-            if (value !== '' && !isNaN(value)) {
-                currentOperand.textContent = parseFloat(value) / 100;
-            }
+            currentOperand.textContent = currentOperand.textContent.slice(0, -1) || '0';
         });
 
-        // Equals button
+        percentButton.addEventListener('click', () => {
+            const value = currentOperand.textContent;
+            if (value && !isNaN(value)) currentOperand.textContent = parseFloat(value) / 100;
+        });
+
         equalsButton.addEventListener('click', () => {
-            let expression = currentOperand.textContent;
-            if (expression === '') return;
+            const expression = currentOperand.textContent;
+            if (!expression) return;
 
             try {
-                let result = eval(expression.replace(/×/g, '*').replace(/÷/g, '/'));
+                const result = eval(expression.replace(/×/g, '*').replace(/÷/g, '/'));
 
-                // Add to history
-                calculationHistory.push({
-                    expression: expression,
-                    result: result
-                });
+                calculationHistory.push({ expression, result });
+                if (calculationHistory.length > 20) calculationHistory.shift();
 
-                // Keep only last 20 items
-                if (calculationHistory.length > 20) {
-                    calculationHistory.shift();
-                }
-
-                // Save to localStorage
                 localStorage.setItem('calculatorHistory', JSON.stringify(calculationHistory));
-
-                // Update display
                 previousOperand.textContent = expression;
                 currentOperand.textContent = result;
-
-                // Update history panel
                 updateHistoryDisplay();
-            } catch (e) {
+            } catch {
                 currentOperand.textContent = 'Error';
             }
         });
 
-        // Initialize calculator
         initCalculator();
     </script>
 </body>
